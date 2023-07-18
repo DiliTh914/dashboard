@@ -1,4 +1,5 @@
 const CategoryModel = require('../models/category.model');
+const ResourceNotFoundError = require("../common/resource-not-found.error");
 
 const categoryService = {
 
@@ -20,12 +21,18 @@ const categoryService = {
     },
 
     getCategoryById: (id) => {
-        return CategoryModel.findById(id);
+        return CategoryModel.findById(id).then(category => {
+            if (!category) throw new ResourceNotFoundError("category not found for id: " + id);
+            return category
+        });
     },
 
     updateCategory: (id, updatedCategory) => {
         return CategoryModel.findById(id)
             .then(category => {
+
+                if (!category) throw new ResourceNotFoundError("category not found for id: " + id);
+
                 category.name = updatedCategory.name;
                 category.parentCategory = updatedCategory.parentCategory;
                 category.description = updatedCategory.description;
@@ -39,7 +46,10 @@ const categoryService = {
     },
 
     deleteCategoryById: (id) => {
-        return CategoryModel.findByIdAndDelete(id);
+        return CategoryModel.findByIdAndDelete(id).then(category => {
+            if (!category) throw new ResourceNotFoundError("category not found for id: " + id);
+            return category
+        });
     },
 }
 

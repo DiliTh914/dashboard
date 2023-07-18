@@ -19,21 +19,30 @@ router.route('').post((req, res) => {
 router.route('/:id').get((req, res) => {
     categoryService.getCategoryById(req.params.id)
         .then(category => res.json(category))
-        .catch(err => res.status(400).json('Error: ' + err));
+        .catch(err => {
+            let statusCode = err instanceof Error ? 404 : 400;
+            return res.status(statusCode).json('Error: ' + err);
+        });
 });
 
 // Update Category
 router.route('/:id').put((req, res) => {
     categoryService.updateCategory(req.params.id, req.body)
         .then(category => res.json(category))
-        .catch(err => res.status(400).json('Error: ' + err));
+        .catch(err => {
+            let statusCode = err instanceof Error ? 404 : 400;
+            return res.status(statusCode).json('Error: ' + err);
+        });
 });
 
 // Delete Category by id
 router.route('/:id').delete((req, res) => {
     categoryService.deleteCategoryById(req.params.id)
         .then(category => res.json(category))
-        .catch(err => res.status(400).json('Error: ' + err));
+        .catch(err => {
+            let statusCode = err instanceof Error ? 404 : 400;
+            return res.status(statusCode).json('Error: ' + err);
+        });
 });
 
 module.exports = router;

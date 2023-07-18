@@ -1,4 +1,5 @@
 const ExpenseModel = require('../models/expense.model');
+const ResourceNotFoundError = require("../common/resource-not-found.error");
 
 const expenseService = {
 
@@ -24,12 +25,18 @@ const expenseService = {
     },
 
     getExpenseById: (id) => {
-        return ExpenseModel.findById(id);
+        return ExpenseModel.findById(id).then(expense => {
+            if (!expense) throw new ResourceNotFoundError("expense not found for id: " + id);
+            return expense;
+        });
     },
 
     updateExpense: (id, updatedExpense) => {
         return ExpenseModel.findById(id)
             .then(expense => {
+
+                if (!expense) throw new ResourceNotFoundError("expense not found for id: " + id);
+
                 expense.amount = Number(updatedExpense.amount);
                 expense.date = Date.parse(updatedExpense.date);
                 expense.location = updatedExpense.location;
@@ -46,7 +53,10 @@ const expenseService = {
     },
 
     deleteExpenseById: (id) => {
-        return ExpenseModel.findByIdAndDelete(id);
+        return ExpenseModel.findByIdAndDelete(id).then(expense => {
+            if (!expense) throw new ResourceNotFoundError("expense not found for id: " + id);
+            return expense;
+        });
     },
 }
 
