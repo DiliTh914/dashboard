@@ -28,8 +28,11 @@ const categoryService = {
             .then(category => {
                 category.name = updatedCategory.name;
                 category.parentCategory = updatedCategory.parentCategory;
-                category.subCategories = updatedCategory.subCategories;
                 category.description = updatedCategory.description;
+
+                if(updatedCategory.subCategories && Array.isArray(updatedCategory.subCategories)) {
+                    category.subCategories = updatedCategory.subCategories;
+                }
 
                 return category.save();
             });
